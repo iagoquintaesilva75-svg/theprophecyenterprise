@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Prophecy Enterprise agency terminal</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+:root {
+    --white: #e8e8e8;
+    --gray: #777;
+    --black: #050505;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--black);
+    color: var(--white);
+    font-family: 'VT323', monospace;
+    font-size: 21px;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* EFEITO DE TELA ANTIGA */
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 99;
+    background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        rgba(255,255,255,0.025) 1px,
+        transparent 3px,
+        transparent 5px
+    );
+}
+
+.screen {
+    width: 100%;
+    max-width: 850px;
+    margin: auto;
+    padding: 25px 18px 50px;
+}
+
+header {
+    border: 1px solid #555;
+    padding: 22px 14px;
+    text-align: center;
+    margin-bottom: 25px;
+    box-shadow: 0 0 15px #222;
+}
+
+.logo {
+    font-size: clamp(27px, 6vw, 42px);
+    letter-spacing: 2px;
+    line-height: 1.15;
+    text-shadow: 0 0 8px #aaa;
+}
+
+.subtitle {
+    color: #888;
+    margin-top: 12px;
+    font-size: 18px;
+}
+
+.status {
+    margin-top: 17px;
+    font-size: 17px;
+    color: #aaa;
+}
+
+.blink {
+    animation: blink 1s steps(2, start) infinite;
+}
+
+@keyframes blink {
+    to { visibility: hidden; }
+}
+
+h2 {
+    font-size: 25px;
+    border-bottom: 1px solid #555;
+    padding-bottom: 9px;
+    font-weight: normal;
+    letter-spacing: 1px;
+}
+
+.description {
+    line-height: 1.45;
+    color: #bbb;
+}
+
+.navigation {
+    display: flex;
+    gap: 10px;
+    margin: 25px 0;
+}
+
+button {
+    background: #080808;
+    color: #ddd;
+    border: 1px solid #666;
+    font-family: inherit;
+    font-size: 21px;
+    padding: 12px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+button:hover,
+button:focus-visible {
+    background: #ddd;
+    color: #000;
+    outline: none;
+}
+
+.nav-button {
+    flex: 1;
+}
+
+.panel {
+    border: 1px solid #444;
+    padding: 16px;
+    margin-bottom: 20px;
+    background: #070707;
+    min-width: 0;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.small {
+    color: #777;
+    font-size: 17px;
+}
+
+.menu-option {
+    display: block;
+    width: 100%;
+    text-align: left;
+    margin: 10px 0;
+}
+
+.output {
+    border: 1px dashed #444;
+    padding: 14px;
+    min-height: 65px;
+    margin-top: 17px;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    line-height: 1.5;
+}
+
+.file {
+    margin: 13px 0;
+    padding: 10px;
+    border-left: 2px solid #777;
+    background: #0c0c0c;
+    overflow-wrap: anywhere;
+}
+
+.file-name {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.file-status {
+    color: #888;
+    font-size: 17px;
+}
+
+.danger {
+    color: #aaa;
+}
+
+.terminal-window {
+    background: #000;
+    border: 1px solid #666;
+    padding: 15px;
+    min-height: 210px;
+    box-shadow: inset 0 0 20px #111;
+}
+
+.terminal-title {
+    color: #777;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.terminal-answer {
+    margin-top: 22px;
+    color: #fff;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    min-height: 60px;
+    line-height: 1.6;
+}
+
+.entity-button {
+    width: 100%;
+    text-align: left;
+    margin: 5px 0;
+    border-color: #333;
+}
+
+.entity-button::before {
+    content: "> ";
+    color: #777;
+}
+
+footer {
+    text-align: center;
+    border-top: 1px solid #333;
+    padding-top: 20px;
+    margin-top: 30px;
+    color: #555;
+    font-size: 17px;
+}
+
+@media (max-width: 480px) {
+    .screen {
+        padding: 15px 11px 35px;
+    }
+
+    .navigation {
+        flex-direction: column;
+    }
+
+    .logo {
+        font-size: 29px;
+    }
+
+    button {
+        padding: 13px 9px;
+    }
+}
+</style>
+</head>
+
+<body>
+<div class="screen">
+
+    <header>
+        <div class="logo">
+            THE PROPHECY<br>
+            ENTERPRISE
+        </div>
+
+        <div class="subtitle">
+            agency terminal // system archive
+        </div>
+
+        <div class="status">
+            SYSTEM STATUS: ONLINE
+            <span class="blink">_</span>
+        </div>
+    </header>
+
+    <main>
+        <section class="panel">
+            <h2>01 // COMPANY INFORMATION</h2>
+
+            <p class="description">
+                The Prophecy Enterprise is an independent digital
+                enterprise dedicated to the development, study and
+                exploration of interactive worlds.
+            </p>
+
+            <p class="description">
+                Our operations cover action games, simulation
+                environments and role-playing experiences.
+                We investigate gameplay systems, virtual ecosystems
+                and the hidden structures that connect digital worlds.
+            </p>
+
+            <p class="small">
+                INTERNAL NOTICE: Some archived records may be incomplete.
+            </p>
+        </section>
+
+        <nav class="navigation">
+            <button class="nav-button" onclick="openSection('avast')">
+                [ AVAST4 ]
+            </button>
+
+            <button class="nav-button" onclick="openSection('terminal')">
+                [ TERMINAL ]
+            </button>
+
+            <button class="nav-button" onclick="openSection('home')">
+                [ MAINFRAME ]
+            </button>
+        </nav>
+
+        <!-- AVAST4 -->
+
+        <section id="avast" class="panel hidden">
+            <h2>02 // AVAST4 SYSTEM</h2>
+
+            <p class="description">
+                ARCHIVE MANAGEMENT PROTOCOL
+            </p>
+
+            <p class="small">
+                Select a system operation.
+            </p>
+
+            <button class="menu-option" onclick="clearCache()">
+                [01] Limpar arquivos / Clear cache
+            </button>
+
+            <button class="menu-option" onclick="scanFiles()">
+                [02] Verificar arquivos corrompidos
+            </button>
+
+            <div id="avast-output" class="output">
+                AWAITING COMMAND...
+            </div>
+
+            <div id="file-list" class="hidden"></div>
+        </section>
+
+        <!-- TERMINAL -->
+
+        <section id="terminal" class="panel hidden">
+            <h2>03 // RESTRICTED TERMINAL</h2>
+
+            <div class="terminal-window">
+                <div class="terminal-title">
+                    PROPHECY_OS // NULL INTERFACE
+                </div>
+
+                <div id="terminal-log">
+                    Connection established.<br>
+                    Select a record to continue.
+                </div>
+
+                <div id="terminal-answer" class="terminal-answer">
+                    <span class="blink">_</span>
+                </div>
+            </div>
+
+            <p class="small">
+                AVAILABLE RECORDS:
+            </p>
+
+            <button class="entity-button" onclick="query('hello')">
+                Hello
+            </button>
+
+            <button class="entity-button" onclick="query('ashen')">
+                Ashen
+            </button>
+
+            <button class="entity-button" onclick="query('kael')">
+                Kael
+            </button>
+
+            <button class="entity-button" onclick="query('sagres')">
+                Sagres
+            </button>
+
+            <button class="entity-button" onclick="query('prunsel')">
+                Prunsel
+            </button>
+
+            <button class="entity-button" onclick="query('null')">
+                Null
+            </button>
+        </section>
+
+        <!-- MAINFRAME -->
+
+        <section id="home" class="panel">
+            <h2>04 // MAINFRAME</h2>
+
+            <p class="description">
+                Welcome to the agency's internal terminal.
+            </p>
+
+            <p class="description">
+                Select a module above to access archived files
+                or query restricted records.
+            </p>
+
+            <div class="output">
+                ROOT DIRECTORY: /PROPHECY/ARCHIVE/<br>
+                ACCESS LEVEL: UNKNOWN<br>
+                LAST SIGNAL: <span id="clock">--:--:--</span><br>
+                CONNECTION: ESTABLISHED
+            </div>
+
+            <p class="small">
+                Warning: Not every record should be opened.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        THE PROPHECY ENTERPRISE AGENCY<br>
+        INTERNAL ARCHIVE // END OF TRANSMISSION
+    </footer>
+</div>
+
+<script>
+const sections = ["home", "avast", "terminal"];
+
+function openSection(name) {
+    sections.forEach(id => {
+        document.getElementById(id).classList.add("hidden");
+    });
+
+    document.getElementById(name).classList.remove("hidden");
+
+    window.scrollTo({
+        top: document.getElementById(name).offsetTop - 15,
+        behavior: "smooth"
+    });
+}
+
+// CLOCK
+
+function updateClock() {
+    document.getElementById("clock").textContent =
+        new Date().toLocaleTimeString("en-GB");
+}
+
+updateClock();
+setInterval(updateClock, 1000);
+
+// AVAST4: SIMULATED CACHE CLEANING
+
+let cacheRunning = false;
+let scanRunning = false;
+
+function clearCache() {
+    if (cacheRunning) return;
+
+    cacheRunning = true;
+    const output = document.getElementById("avast-output");
+    const files = document.getElementById("file-list");
+
+    files.classList.add("hidden");
+
+    output.textContent = "Initializing cache cleanup...";
+    let step = 0;
+
+    const messages = [
+        "Connecting to archive...",
+        "Cleaning cache...",
+        "Removing temporary records...",
+        "Finalizing operation..."
+    ];
+
+    const timer = setInterval(() => {
+        output.textContent = messages[step] + "\nPlease wait...";
+        step++;
+
+        if (step >= messages.length) {
+            clearInterval(timer);
+
+            output.textContent =
+                "CACHE CLEANED SUCCESSFULLY.\n" +
+                "Temporary records: 0\n" +
+                "Operation completed.\n" +
+                "> SYSTEM READY.";
+
+            cacheRunning = false;
+        }
+    }, 1200);
+}
+
+// AVAST4: SIMULATED FILE SCANNER
+
+const corruptedFiles = [
+    "PRUNSEL.ZIP/DATAWIPE.7.8.26",
+    "Basecode8",
+    "Emberfrostlocation17.zip",
+    "Dragon.mp3",
+    "VENOMSHANK.ACESS/DATAWIPE. 6.8.26"
+];
+
+function scanFiles() {
+    if (scanRunning) return;
+
+    scanRunning = true;
+
+    const output = document.getElementById("avast-output");
+    const list = document.getElementById("file-list");
+
+    list.innerHTML = "";
+    list.classList.remove("hidden");
+
+    output.textContent =
+        "Scanning archive files...\n" +
+        "Analyzing directory structure...";
+
+    let index = 0;
+
+    function nextFile() {
+        if (index >= corruptedFiles.length) {
+            output.textContent =
+                "SCAN COMPLETE.\n" +
+                "5 records flagged for review.\n" +
+                "Integrity status: UNKNOWN.";
+
+            const finalLine = document.createElement("p");
+            finalLine.className = "small danger";
+            finalLine.textContent =
+                "NOTICE: These are simulated scan results.";
+            list.appendChild(finalLine);
+
+            scanRunning = false;
+            return;
+        }
+
+        const file = document.createElement("div");
+        file.className = "file";
+
+        const filename = document.createElement("span");
+        filename.className = "file-name";
+        filename.textContent = fileNameSafe(corruptedFiles[index]);
+
+        const status = document.createElement("span");
+        status.className = "file-status";
+        status.textContent = "ANALYZING...";
+
+        file.appendChild(filename);
+        file.appendChild(status);
+        list.appendChild(file);
+
+        output.textContent =
+            "Verificando arquivos...\n" +
+            "Record " + (index + 1) + " of " +
+            corruptedFiles.length;
+
+        setTimeout(() => {
+            status.textContent = "WARNING // CORRUPTION SUSPECTED";
+            status.style.color = "#ddd";
+            index++;
+            setTimeout(nextFile, 500);
+        }, 1000);
+    }
+
+    nextFile();
+}
+
+function fileNameSafe(name) {
+    return name;
+}
+
+// RESTRICTED TERMINAL
+
+const records = {
+    hello: ".null=type2:HELLO.",
+    ashen: ".null=type1:ANNOYING.",
+    kael: ".null=type5:AUDACIOUS.",
+    sagres: ".null=type7:DECOMPOSED.",
+    prunsel: ".null=type9: CORRUPTED.",
+    null: "/datawipe.=null[null][null]null(the end is nigh.THE END IS NULL)"
+};
+
+let querySequence = 0;
+
+function query(name) {
+    const log = document.getElementById("terminal-log");
+    const answer = document.getElementById("terminal-answer");
+
+    querySequence++;
+
+    log.textContent =
+        "QUERY #" + String(querySequence).padStart(4, "0") +
+        "\nREQUEST: " + name.toUpperCase() +
+        "\nPROCESSING RECORD...";
+
+    answer.textContent = "...";
+
+    // The Null record gets a slightly longer response delay.
+    const delay = name === "null" ? 1700 : 600;
+
+    setTimeout(() => {
+        answer.textContent = records[name];
+
+        if (name === "null") {
+            log.textContent =
+                "ACCESS GRANTED.\n" +
+                "WARNING: ROOT RECORD RESPONSE UNSTABLE.";
+        } else {
+            log.textContent =
+                "RECORD FOUND.\n" +
+                "SOURCE: /PROPHECY/RESTRICTED/";
+        }
+    }, delay);
+}
+</script>
+
+</body>
+</html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+</head>
+
+<body>
+  
+</body>
+
+</html>
